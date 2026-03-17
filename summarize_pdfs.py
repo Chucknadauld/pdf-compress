@@ -3,7 +3,7 @@
 PDF Summarizer — Reads PDFs from input_pdfs/ and saves summaries to output_summaries/
 
 Usage:
-    1. Set your API key:  export ANTHROPIC_API_KEY="your-key-here"
+    1. Add your API key to the .env file
     2. Drop PDF files into the input_pdfs/ folder
     3. Run:  python3 summarize_pdfs.py
 """
@@ -14,6 +14,7 @@ from pathlib import Path
 
 import anthropic
 import pymupdf
+from dotenv import load_dotenv
 
 
 INPUT_DIR = Path(__file__).parent / "input_pdfs"
@@ -63,10 +64,12 @@ def main():
     INPUT_DIR.mkdir(exist_ok=True)
     OUTPUT_DIR.mkdir(exist_ok=True)
 
+    load_dotenv(Path(__file__).parent / ".env")
+
     api_key = os.environ.get("ANTHROPIC_API_KEY")
-    if not api_key:
-        print("Error: ANTHROPIC_API_KEY environment variable is not set.")
-        print("  export ANTHROPIC_API_KEY=\"your-key-here\"")
+    if not api_key or api_key == "your-key-here":
+        print("Error: Set your API key in the .env file.")
+        print("  Open .env and replace 'your-key-here' with your actual key.")
         sys.exit(1)
 
     client = anthropic.Anthropic(api_key=api_key)
